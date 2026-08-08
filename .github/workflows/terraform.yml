@@ -26,7 +26,7 @@ jobs:
     # sahi rakhna zaroori hai. Agar folder structure alag hai to path change kar lena.
     defaults:
       run:
-        working-directory: .
+        working-directory: ./parent_module
 
     steps:
       - name: Checkout Repository
