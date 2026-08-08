@@ -4,9 +4,9 @@ name: Terraform - Plan Only (Feature Branch)
 # main/master branch is workflow se exclude hain.
 on:
   push:
-    branches:
+    branches-ignore:
       - main
-      - feature
+      - master
   workflow_dispatch:   # manual trigger ke liye bhi available rahega
 
 env:
@@ -22,8 +22,7 @@ jobs:
     name: Terraform Init / Fmt / Validate / Plan
     runs-on: ubuntu-latest
 
-    # Agar repo root me hi main.tf/provider.tf hain to yeh directory
-    # sahi rakhna zaroori hai. Agar folder structure alag hai to path change kar lena.
+    # Terraform config files (main.tf, provider.tf) parent_module folder ke andar hain
     defaults:
       run:
         working-directory: ./parent_module
@@ -34,8 +33,10 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        
         with:
           terraform_version: "1.9.0"
+          terraform_wrapper: false
 
       - name: Terraform Format Check
         id: fmt
