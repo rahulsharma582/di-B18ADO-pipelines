@@ -26,36 +26,43 @@ jobs:
     # sahi rakhna zaroori hai. Agar folder structure alag hai to path change kar lena.
     defaults:
       run:
-        working-directory: .
+        working-directory: ./parent_module
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        working-directory: ./parent_module
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.9.0"
+          working-directory: ./parent_module
 
       - name: Terraform Format Check
         id: fmt
-        run: terraform fmt -check -recursive
-        continue-on-error: true   # fmt fail hone par bhi aage badhe, lekin visible rahe
+        run: terraform fmt 
+        continue-on-error: true
+        working-directory: ./parent_module   # fmt fail hone par bhi aage badhe, lekin visible rahe
 
       - name: Terraform Init
         id: init
         run: terraform init -input=false
+        working-directory: ./parent_module
 
       - name: Terraform Validate
         id: validate
         run: terraform validate
+        working-directory: ./parent_module
 
       - name: Terraform Plan
         id: plan
         run: terraform plan -input=false -no-color
         continue-on-error: false
+        working-directory: ./parent_module
 
       - name: Fmt Check Result
         if: steps.fmt.outcome == 'failure'
         run: |
           echo "::warning::Terraform files are not properly formatted. Run 'terraform fmt -recursive' locally."
+          working-directory: ./parent_module
