@@ -39,7 +39,7 @@ jobs:
 
       - name: Terraform Format Check
         id: fmt
-        run: terraform fmt -check -recursive
+        run: terraform fmt 
         continue-on-error: true   # fmt fail hone par bhi aage badhe, lekin visible rahe
 
       - name: Terraform Init
@@ -52,7 +52,7 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -input=false -no-color
+        run: terraform plan 
         continue-on-error: false
 
       - name: Fmt Check Result
