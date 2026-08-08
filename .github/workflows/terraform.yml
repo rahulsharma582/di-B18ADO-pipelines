@@ -4,9 +4,9 @@ name: Terraform - Plan Only (Feature Branch)
 # main/master branch is workflow se exclude hain.
 on:
   push:
-    branches-ignore:
+    branches:
       - main
-      - master
+      - feature
   workflow_dispatch:   # manual trigger ke liye bhi available rahega
 
 env:
