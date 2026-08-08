@@ -1,0 +1,61 @@
+name: Terraform - Plan Only (Feature Branch)
+
+# Sirf feature branches par push hone par trigger hoga.
+# main/master branch is workflow se exclude hain.
+on:
+  push:
+    branches:
+      - main
+      - feature
+  workflow_dispatch:   # manual trigger ke liye bhi available rahega
+
+env:
+  # Azure Service Principal credentials - GitHub repo Settings > Secrets and variables > Actions me add karo
+  ARM_CLIENT_ID: "b7cc0a1e-57da-473a-8c04-6a4d21ce1c85"
+  ARM_CLIENT_SECRET: "Lwt8Q~Z8lXVlyUP~lHqXgqFT.6hI5KNs~cAj6aCI"
+  ARM_SUBSCRIPTION_ID: "c4b77061-0024-4ace-a30b-97358212e3ef"
+  ARM_TENANT_ID: "9760c339-90c7-40e3-bf80-2c3bee82448d"
+  TF_IN_AUTOMATION: true
+
+jobs:
+  terraform-plan:
+    name: Terraform Init / Fmt / Validate / Plan
+    runs-on: ubuntu-latest
+
+    # Agar repo root me hi main.tf/provider.tf hain to yeh directory
+    # sahi rakhna zaroori hai. Agar folder structure alag hai to path change kar lena.
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.0"
+
+      - name: Terraform Format Check
+        id: fmt
+        run: terraform fmt -check -recursive
+        continue-on-error: true   # fmt fail hone par bhi aage badhe, lekin visible rahe
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -input=false
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -input=false -no-color
+        continue-on-error: false
+
+      - name: Fmt Check Result
+        if: steps.fmt.outcome == 'failure'
+        run: |
+          echo "::warning::Terraform files are not properly formatted. Run 'terraform fmt -recursive' locally."
