@@ -1,7 +1,22 @@
-variable "rgs" {}
-variable "vnet" {}
-variable "snet" {}
-variable "pip" {}
-variable "nic" {}
-variable "internal_name" {}
-variable "wvm" {}
+variable "rgs" {
+  default = {}
+}
+variable "vnet" {
+  default = {}
+}
+variable "snet" {
+  default = {}
+}
+variable "pip" {
+  default = {}
+}
+variable "nic" {
+  default = {}
+}
+variable "internal_name" {
+  default = ""
+}
+variable "wvm" {
+  default = {}
+}
+
